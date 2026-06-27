@@ -13,7 +13,7 @@ test('comp logo exists on product page', async ({ basePage }) => {
 });
 
 test('footers exist on product page', async ({ basePage }) => {
-    expect(await basePage.getPageFooterCount()).toBe(16);
+    expect(await basePage.getPageFootersCount()).toBe(16);
 });
 
 test('verify product images count', async ({ homePage, searchResultsPage, productInfoPage }) => {
