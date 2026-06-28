@@ -1,6 +1,7 @@
 
+import ajv from 'ajv';
 import {test,expect} from '../../src/fixtures/apifixtures'
-import Ajv from 'ajv'
+
 
 
 let TOKEN= process.env.API_TOKEN;

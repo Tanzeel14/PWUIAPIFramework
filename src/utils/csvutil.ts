@@ -7,7 +7,7 @@ export class csvUtil{
     {
        return parse(fs.readFileSync(filePath,"utf-8"),{
             columns:true, //first row consider as header
-            skipEmptyLines:true,
+            skip_empty_lines:true,
             trim:true, //trim spaces
 
         }) as Record<string,string>[];
