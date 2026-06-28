@@ -12,7 +12,7 @@ test.beforeEach(async ({ loginPage }) => {
 const productData = csvUtil.readCsv('src/data/product.csv');
 for (const row of productData) {
     test.skip(`verify search results count - ${row.searchkey} - ${row.productname}`, async ({ homePage, searchResultsPage }) => {
-        await homePage.doSearch(row.searchkey);
+        await homePage.doSearch(row.searchkey!);
         expect(await searchResultsPage.getProductSearchResultCount()).toBe(Number(row.resultcount));
     });
 
@@ -20,8 +20,8 @@ for (const row of productData) {
 
 for (const row of productData) {
     test(`verify user is able to land on the product page - ${row.searchkey} - ${row.productname}`, async ({ homePage, searchResultsPage, page }) => {
-        await homePage.doSearch(row.searchkey);
-        await searchResultsPage.selectProduct(row.productname);
+        await homePage.doSearch(row.searchkey!);
+        await searchResultsPage.selectProduct(row.productname!);
         expect(await page.title()).toBe(row.productname);
     });
 };

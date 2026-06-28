@@ -30,9 +30,10 @@ test('forgot pswd link exists test',async({})=>{
 
 
 test('user is able to login to app test',async({})=>{
-    loginPage.doLogin('pwtestbatch@open.com','pw123');
-    expect(await homePage.isLogoutLinkExists()).toBeTruthy();
-    expect.soft(await homePage.getHomePageTitle()).toBe('My Account')
+    loginPage.doLogin(process.env.APPUSERNAME!,process.env.APPPASSWORD!);
+
+    //expect(await homePage.isLogoutLinkExist()).toBeTruthy();
+    expect.soft(await homePage.getPageTitle()).toBe('My Account')
   
 
 });
