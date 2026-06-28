@@ -1,12 +1,6 @@
 name: Playwright Tests
 
 on:
-  #schedule:
-   # - cron: '30 14 * * 1-5'  # Mon-Fri 8PM IST
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   branches: [main]
   workflow_dispatch:
     inputs:
       environment:
@@ -32,22 +26,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          #cache: 'npm'
 
-      - name: Cache Node modules
-        uses: actions/cache@v4
+      # 1. Restore Node Modules Cache
+      - name: Restore Node modules cache
+        id: node-cache
+        uses: actions/cache/restore@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Cache Playwright browsers
+      # 2. Restore Playwright Browsers Cache
+      - name: Restore Playwright browsers cache
         id: playwright-cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ hashFiles('package-lock.json') }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
         run: npm ci
@@ -72,6 +68,22 @@ jobs:
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
           OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
           GRANT_TYPE: ${{ secrets.GRANT_TYPE }}
+
+      # 3. Force Save Node Modules (Runs even if tests fail)
+      - name: Save Node modules cache
+        if: always() && steps.node-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      # 4. Force Save Playwright Browsers (Runs even if tests fail)
+      - name: Save Playwright browsers cache
+        if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: Upload HTML Report
         if: always()
